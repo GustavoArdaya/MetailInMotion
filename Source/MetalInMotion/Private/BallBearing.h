@@ -18,7 +18,7 @@ public:
 	UStaticMeshComponent* BallMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BallBearing)
-	float Magnetized = 1.f;
+	bool Magnetized = true;
 
 protected:
 	virtual void BeginPlay() override;
