@@ -24,7 +24,7 @@ APlayerBallBearing::APlayerBallBearing()
 
 	Camera->SetupAttachment(SpringArm, USpringArmComponent::SocketName);
 
-	Magnetized = false; 
+	bMagnetized = false; 
 }
 
 void APlayerBallBearing::BeginPlay()

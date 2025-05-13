@@ -13,6 +13,7 @@ void ABallBearingHUD::DrawHUD()
 
 	if (APlayerBallBearing* BallBearing = Cast<APlayerBallBearing>(GetOwningPawn()))
 	{
+		AddBool(L"In contact", BallBearing->IsInContact());
 		AddFloat(L"Speed", BallBearing->GetVelocity().Size() / 100.0f);
 		AddFloat(L"Dash timer", BallBearing->GetDashTimer());
 		AddFloat(L"Input latitude", BallBearing->GetInputLatitude());

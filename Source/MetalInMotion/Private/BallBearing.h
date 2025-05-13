@@ -14,18 +14,29 @@ class ABallBearing : public APawn
 public:
 	ABallBearing();
 
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = BallBearing)
 	UStaticMeshComponent* BallMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BallBearing)
-	bool Magnetized = true;	
+	bool bMagnetized = true;
+
+	UFUNCTION(BlueprintCallable, Category = BallBearing)
+	void ResetLocation() const;
+
+	FORCEINLINE bool IsInContact() const { return bInContact; }
 
 protected:
 	virtual void BeginPlay() override;
 
-public:	
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;	
 
+	bool bInContact = false;
+
+private:
+
+	FVector InitialLocation = FVector::ZeroVector;
 };
