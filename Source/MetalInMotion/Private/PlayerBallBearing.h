@@ -43,6 +43,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "BallBearing")
 	float MaximumSpeed = 4.f;
 
+	FORCEINLINE float GetInputLatitude() const { return InputLatitude; }
+	FORCEINLINE float GetInputLongitude() const { return InputLongitude; }
+	FORCEINLINE float GetDashTimer() const { return DashTimer; }
+
 protected:
 	
 	virtual void Tick(float deltaSeconds) override;

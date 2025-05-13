@@ -10,7 +10,7 @@ UCLASS()
 class ABallBearing : public APawn
 {
 	GENERATED_BODY()
-
+	
 public:
 	ABallBearing();
 
@@ -18,7 +18,7 @@ public:
 	UStaticMeshComponent* BallMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BallBearing)
-	bool Magnetized = true;
+	bool Magnetized = true;	
 
 protected:
 	virtual void BeginPlay() override;
