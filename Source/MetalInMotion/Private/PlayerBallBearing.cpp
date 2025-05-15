@@ -3,6 +3,7 @@
 
 #include "PlayerBallBearing.h"
 
+#include "MaterialHLSLTree.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -41,11 +42,38 @@ void APlayerBallBearing::BeginPlay()
 	}
 }
 
-void APlayerBallBearing::Tick(float deltaSeconds)
+void APlayerBallBearing::Tick(float DeltaSeconds)
 {
-	Super::Tick(deltaSeconds);
+	Super::Tick(DeltaSeconds);
 
-	BallMesh->AddForce(FVector(InputLongitude, InputLatitude, 0.0f) * ControllerForce * BallMesh->GetMass());	
+	BallMesh->AddForce(FVector(InputLongitude, InputLatitude, 0.0f) * ControllerForce * BallMesh->GetMass());
+
+	FVector Velocity = BallMesh->GetPhysicsLinearVelocity();
+	const float Z = Velocity.Z;
+
+	Velocity.Z = 0.0f;
+
+	if (Velocity.Size() > MaximumSpeed * 100.f)
+	{
+		Velocity.Normalize();
+		Velocity *= MaximumSpeed * 100.f;
+		Velocity.Z = Z;
+
+		const float BrakingRadio = FMath::Pow(1.f - FMath::Min(DashTimer, 1.f), 2.f);
+
+		const FVector MergedVelocity = FMath::Lerp(BallMesh->GetPhysicsLinearVelocity(), Velocity, BrakingRadio);
+
+		BallMesh->SetPhysicsLinearVelocity(MergedVelocity);
+	}
+	else
+	{
+		BallMesh->AddForce(FVector(InputLongitude, InputLatitude, 0.f) * ControllerForce * BallMesh->GetMass());
+	}
+
+	if (DashTimer > 0.f)
+	{
+		DashTimer = FMath::Max(0.f, DashTimer - DeltaSeconds);
+	}
 }
 
 void APlayerBallBearing::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -74,10 +102,29 @@ void APlayerBallBearing::Look(const FInputActionValue& Value)
 
 void APlayerBallBearing::Jump(const FInputActionValue& Value)
 {
+	if (bInContact)
+	{
+		BallMesh->AddImpulse(FVector(0.f, 0.f, JumpForce * 1000));
+	}
 }
 
 void APlayerBallBearing::Dash(const FInputActionValue& Value)
 {
+	if (DashTimer == 0.f)
+	{
+		FVector Velocity = BallMesh->GetComponentVelocity();
+
+		if (Velocity.Size() > 1.f)
+		{
+			Velocity.Normalize();
+			Velocity *= DashForce * 1000.f;
+
+			BallMesh->AddImpulse(Velocity);
+
+			DashTimer = 1.5;
+		}
+
+	}
 }
 
 

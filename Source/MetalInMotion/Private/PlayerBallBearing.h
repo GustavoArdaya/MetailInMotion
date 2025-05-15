@@ -49,7 +49,7 @@ public:
 
 protected:
 	
-	virtual void Tick(float deltaSeconds) override;
+	virtual void Tick(float DeltaSeconds) override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	
