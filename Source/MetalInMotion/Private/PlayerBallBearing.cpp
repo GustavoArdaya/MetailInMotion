@@ -45,8 +45,7 @@ void APlayerBallBearing::Tick(float deltaSeconds)
 {
 	Super::Tick(deltaSeconds);
 
-	BallMesh->AddForce(FVector(InputLongitude, InputLatitude, 0.0f) * ControllerForce * BallMesh->GetMass());
-	UE_LOG(LogTemp, Warning, TEXT("Move Input - Longitude: %f, Latitude: %f"), InputLongitude, InputLatitude);
+	BallMesh->AddForce(FVector(InputLongitude, InputLatitude, 0.0f) * ControllerForce * BallMesh->GetMass());	
 }
 
 void APlayerBallBearing::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
