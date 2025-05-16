@@ -9,6 +9,26 @@
 
 
 /**
+Get a ratio of a value between a minimum and maximum amount, optionally clamped.
+*********************************************************************************/
+
+static float GetRatio(float Value, float Minimum, float Maximum, bool bClamp = true)
+{
+	if (Value > Maximum && bClamp == true)
+	{
+		return 1.0f;
+	}
+	else if (Value > Minimum)
+	{
+		return (Value - Minimum) / (Maximum - Minimum);
+	}
+	else
+	{
+		return 0.0f;
+	}
+}
+
+/**
 Constructor for a goal for ball bearings.
 *********************************************************************************/
 
@@ -31,6 +51,29 @@ void ABallBearingGoal::PostInitializeComponents()
 #if WITH_EDITORONLY_DATA
 	GetSpriteComponent()->SetHiddenInGame(true);
 #endif
+}
+
+void ABallBearingGoal::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	FVector CurrentLocation = GetActorLocation();
+	float SphereRadius = Cast<USphereComponent>(GetCollisionComponent())->GetScaledSphereRadius();
+	float TickMagnetism = Magnetism;
+
+	for (ABallBearing* BallBearing : BallBearings)
+	{
+		FVector Difference = CurrentLocation - BallBearing->GetActorLocation();
+		float Distance = Difference.Size();
+		FVector Direction = Difference;
+
+		Direction.Normalize();
+
+		float Ratio = GetRatio(Distance, 0.f, SphereRadius);
+		FVector Force = (1.f - Ratio) * TickMagnetism * Direction;
+
+		BallBearing->BallMesh->AddForce(Force);
+	}
 }
 
 
