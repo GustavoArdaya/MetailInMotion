@@ -34,6 +34,7 @@ Constructor for a goal for ball bearings.
 
 ABallBearingGoal::ABallBearingGoal()
 {
+	PrimaryActorTick.bCanEverTick = true;
 	SetActorHiddenInGame(false);
 }
 
@@ -60,6 +61,16 @@ void ABallBearingGoal::Tick(float DeltaSeconds)
 	FVector CurrentLocation = GetActorLocation();
 	float SphereRadius = Cast<USphereComponent>(GetCollisionComponent())->GetScaledSphereRadius();
 	float TickMagnetism = Magnetism;
+
+	// If we're cheating then give our goals extra magnetism.
+
+	static const IConsoleVariable* ExtraForce = IConsoleManager::Get().FindConsoleVariable(TEXT("OurGame.ExtraMagnetism"));
+
+	if (ExtraForce != nullptr &&
+		ExtraForce->GetInt() != 0)
+	{
+		TickMagnetism *= 4.0f;
+	}
 
 	for (ABallBearing* BallBearing : BallBearings)
 	{
