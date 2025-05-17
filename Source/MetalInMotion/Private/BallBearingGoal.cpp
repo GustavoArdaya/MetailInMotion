@@ -43,6 +43,23 @@ ABallBearingGoal::ABallBearingGoal()
 Hide the collision and sprite components in-game.
 *********************************************************************************/
 
+bool ABallBearingGoal::HasBallBearing() const
+{
+	const FVector CurrentLocation = GetActorLocation();
+
+	for (const ABallBearing* BallBearing : BallBearings)
+	{
+		FVector Difference = CurrentLocation - BallBearing->GetActorLocation();
+		const float Distance = Difference.Size();
+
+		if (Distance < 75.f)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 void ABallBearingGoal::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
